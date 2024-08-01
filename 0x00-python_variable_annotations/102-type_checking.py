@@ -7,7 +7,7 @@ into a tuple by repeating its elements.
 from typing import Tuple, List
 
 
-def zoom_array(lst: Tuple[int, ...], factor: int = 2) -> List[int]:
+def zoom_array(lst: Tuple, factor: int = 2) -> List[int]:
     """
     Returns a list with elements from the
     tuple repeated according to the factor.
