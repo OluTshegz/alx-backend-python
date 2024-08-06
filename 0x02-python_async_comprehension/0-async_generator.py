@@ -33,7 +33,7 @@ async def async_generator() -> AsyncGenerator[float, None]:
     # `_` is a throwaway variable, an unused loop index,
     # holding current iteration index (ranging from 0 to 9),
     # yielding only sequential numbers, not random.
-    for _ in range(10):
+    for num in range(10):
         await asyncio.sleep(1)
         # yield random.random() * 10
         yield random.uniform(0, 10)
