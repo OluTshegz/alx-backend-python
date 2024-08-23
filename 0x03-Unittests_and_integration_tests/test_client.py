@@ -73,10 +73,7 @@ class TestGithubOrgClient(unittest.TestCase):
                    new_callable=PropertyMock) as mock_url:
             mock_url.return_value = payload['repos_url']
             client = GithubOrgClient("google")
-            self.assertEqual(
-                GithubOrgClient("google").public_repos(),
-                ["episodes.dart", "kratu"],
-            )
+            self.assertEqual(client.public_repos(), ["episodes.dart", "kratu"])
             mock_url.assert_called_once()
         mock_get_json.assert_called_once()
 
@@ -151,16 +148,13 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """
         Tests public_repos method with the expected results from fixtures.
         """
-        self.assertEqual(
-            GithubOrgClient("google").public_repos(),
-            self.expected_repos,
-        )
+        self.assertEqual(self.client.public_repos(), self.expected_repos)
 
     def test_public_repos_with_license(self) -> None:
         """
         Tests public_repos method with the license filter using fixtures.
         """
         self.assertEqual(
-            GithubOrgClient("google").public_repos(license="apache-2.0"),
+            self.client.public_repos(license="apache-2.0"),
             self.apache2_repos,
         )
