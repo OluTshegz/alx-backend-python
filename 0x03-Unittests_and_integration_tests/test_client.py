@@ -65,7 +65,7 @@ class TestGithubOrgClient(unittest.TestCase):
             'repos_url': "https://api.github.com/users/google/repos",
             'repos': [
                 {"name": "episodes.dart"},
-                {"name": "kratu"}
+                {"name": "kratu"},
             ]
         }
         mock_get_json.return_value = payload['repos']
