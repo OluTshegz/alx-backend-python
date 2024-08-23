@@ -18,10 +18,10 @@ class TestGithubOrgClient(unittest.TestCase):
     """
 
     @parameterized.expand([
-        ("google", {'login': "google"}),
-        ("abc", {'login': "abc"})
+        ("google", {"login": "google"}),
+        ("abc", {"login": "abc"})
     ])
-    @patch('client.get_json', return_value={'payload': True})
+    @patch('client.get_json', return_value={"payload": True})
     def test_org(self, org: str, expected_response: Dict,
                  mock_get_json: MagicMock) -> None:
         """
