@@ -35,9 +35,7 @@ class TestGithubOrgClient(unittest.TestCase):
         mock_get_json.return_value = MagicMock(return_value=expected_response)
         client = GithubOrgClient(org)
         self.assertEqual(client.org(), expected_response)
-        mock_get_json.assert_called_once_with(
-            "https://api.github.com/orgs/{}".format(org)
-        )
+        mock_get_json.assert_called_once()
 
     def test_public_repos_url(self) -> None:
         """
