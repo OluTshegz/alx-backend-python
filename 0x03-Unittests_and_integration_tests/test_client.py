@@ -21,7 +21,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ("google", {'login': "google"}),
         ("abc", {'login': "abc"}),
     ])
-    @patch('client.get_json')
+    @patch('client.get_json', return_value={'payload': True})
     def test_org(self, org: str, expected_response: Dict,
                  mock_get_json: MagicMock) -> None:
         """
@@ -32,11 +32,12 @@ class TestGithubOrgClient(unittest.TestCase):
             expected_response (Dict): Expected response.
             mock_get_json (MagicMock): Mocked get_json function.
         """
-        mock_get_json.return_value = expected_response
+        mock_get_json.return_value = MagicMock(return_value=expected_response)
         client = GithubOrgClient(org)
         self.assertEqual(client.org(), expected_response)
-        mock_get_json.assert_called_once_with(f"""https://api.github.com/
-                                              orgs/{org}""")
+        mock_get_json.assert_called_once_with(
+            "https://api.github.com/orgs/{}".format(org)
+        )
 
     def test_public_repos_url(self) -> None:
         """
