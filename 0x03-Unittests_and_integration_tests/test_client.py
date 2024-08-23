@@ -22,10 +22,11 @@ class TestGithubOrgClient(unittest.TestCase):
         ("abc", {'login': "abc"}),
     ])
     @patch('client.get_json')
-    def test_org(self, org: str, expected_response: Dict, mock_get_json: MagicMock) -> None:
+    def test_org(self, org: str, expected_response: Dict,
+                 mock_get_json: MagicMock) -> None:
         """
         Tests that GithubOrgClient.org returns the correct value.
-        
+
         Args:
             org (str): Organization name.
             expected_response (Dict): Expected response.
@@ -34,23 +35,30 @@ class TestGithubOrgClient(unittest.TestCase):
         mock_get_json.return_value = expected_response
         client = GithubOrgClient(org)
         self.assertEqual(client.org(), expected_response)
-        mock_get_json.assert_called_once_with(f"https://api.github.com/orgs/{org}")
+        mock_get_json.assert_called_once_with(f"""https://api.github.com/
+                                              orgs/{org}""")
 
     def test_public_repos_url(self) -> None:
         """
-        Tests that GithubOrgClient._public_repos_url returns the correct URL based on the mocked org property.
+        Tests that GithubOrgClient._public_repos_url returns
+        the correct URL based on the mocked org property.
         """
-        with patch('client.GithubOrgClient.org', new_callable=PropertyMock) as mock_org:
-            mock_org.return_value = {'repos_url': "https://api.github.com/users/google/repos"}
+        with patch('client.GithubOrgClient.org',
+                   new_callable=PropertyMock) as mock_org:
+            mock_org.return_value = {'repos_url':
+                                     """https://api.github.com/
+                                     users/google/repos"""}
             client = GithubOrgClient("google")
-            self.assertEqual(client._public_repos_url, "https://api.github.com/users/google/repos")
+            self.assertEqual(client._public_repos_url,
+                             "https://api.github.com/users/google/repos")
             mock_org.assert_called_once()
 
     @patch('client.get_json')
     def test_public_repos(self, mock_get_json: MagicMock) -> None:
         """
-        Tests that GithubOrgClient.public_repos returns the correct list of repo names.
-        
+        Tests that GithubOrgClient.public_repos returns
+        the correct list of repo names.
+
         Args:
             mock_get_json (MagicMock): Mocked get_json function.
         """
@@ -62,10 +70,12 @@ class TestGithubOrgClient(unittest.TestCase):
             ]
         }
         mock_get_json.return_value = payload['repos']
-        with patch('client.GithubOrgClient._public_repos_url', new_callable=PropertyMock) as mock_url:
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=PropertyMock) as mock_url:
             mock_url.return_value = payload['repos_url']
             client = GithubOrgClient("google")
-            self.assertEqual(client.public_repos(), ["episodes.dart", "kratu"])
+            self.assertEqual(client.public_repos(),
+                             ["episodes.dart", "kratu"])
             mock_url.assert_called_once()
         mock_get_json.assert_called_once()
 
@@ -73,10 +83,12 @@ class TestGithubOrgClient(unittest.TestCase):
         ({"license": {"key": "bsd-3-clause"}}, "bsd-3-clause", True),
         ({"license": {"key": "bsl-1.0"}}, "bsd-3-clause", False),
     ])
-    def test_has_license(self, repo: Dict, key: str, expected: bool) -> None:
+    def test_has_license(self, repo: Dict,
+                         key: str, expected: bool) -> None:
         """
-        Tests that GithubOrgClient.has_license returns the correct boolean for license presence.
-        
+        Tests that GithubOrgClient.has_license returns
+        the correct boolean for license presence.
+
         Args:
             repo (Dict): Repository dictionary.
             key (str): License key.
@@ -99,6 +111,11 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     Integration tests for GithubOrgClient using fixtures.
     """
 
+    org_payload = TEST_PAYLOAD[0][0]
+    repos_payload = TEST_PAYLOAD[0][1]
+    expected_repos = TEST_PAYLOAD[0][2]
+    apache2_repos = TEST_PAYLOAD[0][3]
+
     @classmethod
     def setUpClass(cls) -> None:
         """
@@ -114,7 +131,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         class MockResponse:
             def __init__(self, json_data):
                 self._json_data = json_data
-            
+
             def json(self):
                 return self._json_data
 
@@ -139,4 +156,5 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """
         Tests public_repos method with the license filter using fixtures.
         """
-        self.assertEqual(self.client.public_repos(license="apache-2.0"), self.apache2_repos)
+        self.assertEqual(self.client.public_repos(license="apache-2.0"),
+                         self.apache2_repos)
